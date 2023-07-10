@@ -36,7 +36,6 @@ const LoginForm = ({ setIsLoggedIn }) => {
         <p className="text-richblack-5 mb-1 leading-[1.375rem]">
           Email Address <sup className="text-pink-200">*</sup>
         </p>
-
         <input
           required
           type="email"
