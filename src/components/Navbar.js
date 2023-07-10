@@ -13,7 +13,7 @@ const Navbar = (props) => {
         <img src={logo} alt="logo" width={160} height={32} loading="lazy" />
       </Link>
       <nav>
-        <ul className="flex gap-x-6 text-richblack-100">
+        <ul className="flex gap-x-6 text-richblack-25">
           <li>
             <Link to="/">Home</Link>
           </li>
@@ -39,7 +39,7 @@ const Navbar = (props) => {
         {!isLoggedIn && (
           <Link to="/signup">
             <button className="bg-richblack-800 text-richblack-100 py-[8px] px-[12px] rounded-[8px] border border-richblack-700">
-              Signup
+              Sign up
             </button>
           </Link>
         )}
@@ -58,7 +58,7 @@ const Navbar = (props) => {
         )}
         {isLoggedIn && (
           <Link to="/dashboard">
-            <button className="bg-richblack-800 text-richblack py-[8px] px-[12px] rounded-[8px] border border-richblack-700">
+            <button className="bg-richblack-800 text-richblack-100 py-[8px] px-[12px] rounded-[8px] border border-richblack-700">
               Dashboard
             </button>
           </Link>
