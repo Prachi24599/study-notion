@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons";
+import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
 
 const SignupForm = () => {
   const [formData, setFormData] = useState({
@@ -92,6 +92,7 @@ const SignupForm = () => {
               {showPassword ? <AiOutlineEyeInvisible /> : <AiOutlineEye />}
             </span>
           </label>
+
           <label>
             <p>
               Confirm Password <sup>*</sup>
