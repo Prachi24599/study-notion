@@ -11,6 +11,7 @@ const SignupForm = () => {
   });
 
   const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   function changeHandler(event) {
     setFormData((prevFormData) => ({
@@ -99,7 +100,7 @@ const SignupForm = () => {
             </p>
             <input
               required
-              type={showPassword ? "text" : "password"}
+              type={showConfirmPassword ? "text" : "password"}
               name="confirmPassword"
               value={formData.confirmPassword}
               onChange={changeHandler}
@@ -107,10 +108,14 @@ const SignupForm = () => {
             />
             <span
               onClick={() => {
-                setShowPassword((prev) => !prev);
+                setShowConfirmPassword((prev) => !prev);
               }}
             >
-              {showPassword ? <AiOutlineEyeInvisible /> : <AiOutlineEye />}
+              {showConfirmPassword ? (
+                <AiOutlineEyeInvisible />
+              ) : (
+                <AiOutlineEye />
+              )}
             </span>
           </label>
         </div>
