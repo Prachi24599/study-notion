@@ -1,7 +1,11 @@
 import React, { useState } from "react";
+import { toast } from "react-hot-toast";
 import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
+import { useNavigate } from "react-router-dom";
 
-const SignupForm = () => {
+const SignupForm = ({ setIsLoggedIn }) => {
+  const navigate = useNavigate();
+
   const [formData, setFormData] = useState({
     firstName: "",
     lastName: "",
@@ -19,6 +23,19 @@ const SignupForm = () => {
       [event.target.name]: event.target.value,
     }));
   }
+
+  function submitHandler(event) {
+    event.preventDefault();
+    if (formData.password !== formData.confirmPassword) {
+      toast.error("Passwords do not match");
+      return;
+    }
+    setIsLoggedIn(true);
+    toast.success("Account Created");
+    console.log(formData);
+    navigate("/dashboard");
+  }
+
   return (
     <div>
       {/* Student-Instructor Tab */}
@@ -27,7 +44,7 @@ const SignupForm = () => {
         <button>Instructor</button>
       </div>
 
-      <form>
+      <form onSubmit={submitHandler}>
         {/* firstName and lastName */}
         <div>
           <label>
