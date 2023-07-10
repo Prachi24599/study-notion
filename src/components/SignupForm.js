@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons";
 
 const SignupForm = () => {
   const [formData, setFormData] = useState({
@@ -8,6 +9,8 @@ const SignupForm = () => {
     password: "",
     confirmPassword: "",
   });
+
+  const [showPassword, setShowPassword] = useState(false);
 
   function changeHandler(event) {
     setFormData((prevFormData) => ({
@@ -24,6 +27,7 @@ const SignupForm = () => {
       </div>
 
       <form>
+        {/* firstName and lastName */}
         <div>
           <label>
             <p>
@@ -52,6 +56,64 @@ const SignupForm = () => {
             />
           </label>
         </div>
+        {/* Email Address*/}
+        <label>
+          <p>
+            Email Address<sup>*</sup>
+          </p>
+          <input
+            required
+            type="email"
+            name="email"
+            value={formData.email}
+            onChange={changeHandler}
+            placeholder="Enter Email Address"
+          />
+        </label>
+        {/* Create Password and Confirm Password */}
+        <div>
+          <label>
+            <p>
+              Create Password <sup>*</sup>
+            </p>
+            <input
+              required
+              type={showPassword ? "text" : "password"}
+              name="password"
+              value={formData.password}
+              onChange={changeHandler}
+              placeholder="Enter Password"
+            />
+            <span
+              onClick={() => {
+                setShowPassword((prev) => !prev);
+              }}
+            >
+              {showPassword ? <AiOutlineEyeInvisible /> : <AiOutlineEye />}
+            </span>
+          </label>
+          <label>
+            <p>
+              Confirm Password <sup>*</sup>
+            </p>
+            <input
+              required
+              type={showPassword ? "text" : "password"}
+              name="confirmPassword"
+              value={formData.confirmPassword}
+              onChange={changeHandler}
+              placeholder="Confirm Password"
+            />
+            <span
+              onClick={() => {
+                setShowPassword((prev) => !prev);
+              }}
+            >
+              {showPassword ? <AiOutlineEyeInvisible /> : <AiOutlineEye />}
+            </span>
+          </label>
+        </div>
+        <button>Create Account</button>
       </form>
     </div>
   );
