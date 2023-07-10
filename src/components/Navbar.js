@@ -1,6 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import logo from "../assets/Logo.svg";
+import { toast } from "react-hot-toast";
 
 const Navbar = (props) => {
   let isLoggedIn = props.isLoggedIn;
@@ -12,7 +13,7 @@ const Navbar = (props) => {
         <img src={logo} alt="logo" width={160} height={32} loading="lazy" />
       </Link>
       <nav>
-        <ul className="flex gap-3">
+        <ul className="flex gap-3 ">
           <li>
             <Link to="/">Home</Link>
           </li>
@@ -24,9 +25,7 @@ const Navbar = (props) => {
           </li>
         </ul>
       </nav>
-
       {/* Login Signup Logout Dashboard */}
-
       <div className="flex ml-5 mr-3 gap-3">
         {/* Login button will be visible only when user is not logged in */}
 
@@ -42,7 +41,14 @@ const Navbar = (props) => {
         )}
         {isLoggedIn && (
           <Link to="/">
-            <button>Log Out</button>
+            <button
+              onClick={() => {
+                setIsLoggedIn(false);
+                toast.success("Logged Out");
+              }}
+            >
+              Log Out
+            </button>
           </Link>
         )}
         {isLoggedIn && (
