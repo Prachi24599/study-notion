@@ -58,8 +58,7 @@ const sendOtp = async (req, res) => {
         console.err("Error while generating otp", err);
         res.status(500).json({
             success : false,
-            data : err,
-            message : "Error while generating otp"
+            message : err.message
         })
     }
 } 
