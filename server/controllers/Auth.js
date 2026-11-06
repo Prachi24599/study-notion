@@ -1,6 +1,7 @@
 import User from "../models/User.js";
 import Otp from "../models/Otp.js";
 import otpGenerator from "otp-generator";
+import bcrypt from "bcrypt";
 
 //sendOtp
 const sendOtp = async (req, res) => {
@@ -116,6 +117,13 @@ const signUp = async (req, res) => {
         
         //Create entry in DB
 
+        const profileDetails = await Profile.create({
+            gender : null,
+            dateOfBirth : null,
+            about : null,
+            contactNumber : null
+        })
+
         const user = await User.create({
             firstName, 
             lastName, 
@@ -123,9 +131,16 @@ const signUp = async (req, res) => {
             contactNumber, 
             password : hashedPassword, 
             accountType,
-            additionalDetails
+            additionalDetails : profileDetails._id,
+            image : `https://api.dicebear.com/5.x/initials/svg?seed=${firstName} ${lastName}`,
         })
+
         //return res
+        res.status(200).json({
+            success : true,
+            data : user,
+            message : "User created Successfully!!"
+        })
     }catch(err) {
         console.err("Error while Signup!", err);
         res.status(500).json({
