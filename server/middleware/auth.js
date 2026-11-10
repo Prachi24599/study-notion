@@ -54,3 +54,21 @@ const isStudent = async () => {
     }   
 }
 
+//isInstructor
+const isInstructor = async () => {
+    try{
+        if(req.user.accountType !== "Instructor"){
+            return res.status(401).json({
+                success : false,
+                message : "This is protected route for Instructor only"
+            })
+        }
+        next();
+    }catch(err){
+        res.status(500).json({
+             success : false,
+            message : "User role cannot be verified, Please try again!"
+        })
+    }   
+}
+
