@@ -178,8 +178,8 @@ const login = async (req, res) => {
             //generate jwt token
             const payload = {
                 email : user.email,
-                id : user.id,
-                role : user.role
+                id : user._id,
+                accountType : user.accountType
             }
             const token = jwt.sign(payload, process.env.JWT_SECRET, {
                 expiresIn : "2h"
