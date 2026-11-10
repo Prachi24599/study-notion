@@ -211,3 +211,17 @@ const login = async (req, res) => {
         })
     }
 }
+
+//Change Password
+const changePassword = async (req, res) => {
+    try{
+        //fetch data from req body - oldPassword, newPassword, confirmNewPassword
+        //validation
+        //update password in DB
+        //send mail for - Password Reset
+        //Return Response
+
+    }catch(err) {
+
+    }
+}
