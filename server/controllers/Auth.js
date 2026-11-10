@@ -2,6 +2,9 @@ import User from "../models/User.js";
 import Otp from "../models/Otp.js";
 import otpGenerator from "otp-generator";
 import bcrypt from "bcrypt";
+import jwt from "jsonwebtoken";
+import dotenv from "dotenv";
+dotenv.config();
 
 //sendOtp
 const sendOtp = async (req, res) => {
@@ -151,3 +154,60 @@ const signUp = async (req, res) => {
 }
 
 //Login
+const login = async (req, res) => {
+    try{
+        //get data from req.body
+        const {email, password} = req.body;
+        //validate data
+        if(!email || !password){
+            return res.status(403).json({
+                success : false,
+                message : "All fields are required, please try again!"
+            })
+        }
+        //check if user exits or not
+        const user = await User.findOne({email}).populate("additionalDetails");
+        if(!user){
+            return res.status(401).json({
+                success : false,
+                message : "User is not registered, Please sign up first!"
+            })
+        }
+        //match password
+        if(bcrypt.compare(password, user?.password)){
+            //generate jwt token
+            const payload = {
+                email : user.email,
+                id : user.id,
+                role : user.role
+            }
+            const token = jwt.sign(payload, process.env.JWT_SECRET, {
+                expiresIn : "2h"
+            })
+            user.token = token;
+            user.password = undefined
+
+            //create cookie and send response
+            const options = {
+                expires : new Date(Date.now() + 3 * 24 * 60 * 60 * 1000)
+            }
+            res.cookie("token", token, options).status(200).json({
+                success : true,
+                token,
+                user,
+                message : "Logged in Successfully!"
+            })
+        }else {
+            return res.status(401).json({
+                success : false,
+                message : "Password is incorrect!"
+            })
+        } 
+    }catch(err){
+        console.err("Error while Login!", err);
+        res.status(500).json({
+            success : false,
+            message : err.message
+        })
+    }
+}
