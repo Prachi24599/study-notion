@@ -10,6 +10,7 @@
 import User from "../models/User.js";
 import mailSender from "../utils/mailSender.js";
 import crypto from "node:crypto";
+import bcrypt from "bcrypt";
 
 //1. Link Generate and Mail Send
 //resetPasswordToken
@@ -57,3 +58,53 @@ const resetPasswordToken = async (req, res) => {
 }
 
 //2. Open Link and Reset the Password
+const resetPassword = async (req, res) => {
+   try{
+        //Data Fetch
+        const {password, confirmPassword, token} = req.body;
+        //Validation
+        if(password !== confirmPassword){
+            return res.json({
+                success : false,
+                message : "Password and Confirm Password does not match!"
+            })
+        }
+        //Get userdetails from db using token
+        const userDetails = await User.findOne({token : token});
+        //If no entry - Invalid token
+        if(!userDetails){
+            return res.json({
+                success : false,
+                message : "Token is invalid"
+            })
+        }
+        //Token time check - means token has expired
+        if(userDetails.resetPasswordExpires < Date.now()){
+            return res.json({
+                success : false,
+                message : "Token is Expired, Please regenerate"
+            })
+        }
+        //Hash password
+        const hashedPassword = await bcrypt.hash(password, 10);
+        //password update
+        await User.findOneAndUpdate(
+            {token : token},
+            {password : hashedPassword},
+            {new : true}
+        )
+        //return response
+        return res.status(200).json({
+                success : true,
+                message : "Password reset successful!"
+        })
+   }catch(err){
+        console.log("Error while resetting pass", err);
+        res.status(500).json({
+            success : false,
+            message : err.message
+        })
+   }
+}
+
+export {resetPasswordToken, resetPassword}
