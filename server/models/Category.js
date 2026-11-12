@@ -12,7 +12,7 @@ const categorySchema = new mongoose.Schema({
     },
     //one category -> multiple courses
     //one category can belong to multiple courses
-    course : [{
+    courses : [{
         type : mongoose.Schema.Types.ObjectId,
         ref : "Course"
     }]
