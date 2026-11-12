@@ -10,10 +10,12 @@ const categorySchema = new mongoose.Schema({
         type : String,
         trim : true
     },
-    course : {
+    //one category -> multiple courses
+    //one category can belong to multiple courses
+    course : [{
         type : mongoose.Schema.Types.ObjectId,
         ref : "Course"
-    }
+    }]
 })
 
 export default mongoose.model("Category", categorySchema);
