@@ -30,3 +30,23 @@ const createCategory = async (req, res) => {
         })
     }
 }
+
+const getAllCategory = async (req, res) => {
+    try{
+        const allCategory = await Category.find({}, {name : true, description : true});
+        res.status(200).json({
+            success : true,
+            message : "All tags are returned successfully!",
+            data : allCategory
+        })
+         
+    }catch(err) {
+        console.log("Error while fetching all category", err);
+        res.status(500).json({
+            success : false,
+            message : err.message
+        })
+    }
+}
+
+export {getAllCategory, createCategory};
