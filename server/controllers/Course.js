@@ -25,6 +25,7 @@ const createCourse = async (req, res) => {
         const userId = req.user.id;
         const instructorDetails = await User.findById({userId});
         console.log("instructorDetails", instructorDetails);
+        //TODO - check weather userId and instructorDetails._id are same or different??
 
         if(!instructorDetails){
             return res.status(404).json({
@@ -92,3 +93,30 @@ const createCourse = async (req, res) => {
         })
     }
 }
+
+const showAllCourses = async (req, res) => {
+    try{
+        const allCourses = await Course.find({}, {
+            courseName : true,
+            price : true,
+            thumbnail : true,
+            instructor : true,
+            ratingAndReviews : true,
+            studentsEnrolled : true,
+        }).populate("instrctor").exec();
+
+        res.status(200).json({
+            success : true,
+            data : allCourses,
+            message : "All courses successfully!"
+        })
+    }catch(err){
+        console.log("Error while fetching courses", err);
+        res.status(500).json({
+            success : false,
+            message : err.message
+        })
+    }
+}
+
+export {createCourse, showAllCourses};
