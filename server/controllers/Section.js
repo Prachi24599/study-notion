@@ -69,3 +69,31 @@ const updateSection = async (req, res) => {
         })
     }
 }
+
+const deleteSection = async (req, res) => {
+    try{
+        //fetch data - assuming that we are sending id in params
+        const {sectionId} = req.params;
+        //validate data
+        if(!sectionId){
+            return res.status(500).json({
+                success : false,
+                message : "sectionId required!"
+            })
+        }
+        //delete 
+        await findByIdAndDelete(sectionId);
+        res.status(200).json({
+            success : true,
+            message : "Section deleted successfully"
+        })
+    }catch(err) {
+        console.log("Error while Deleting Course", err);
+        res.status(500).json({
+            success : false,
+            message : err.message
+        })
+    }
+}
+
+export {createSection, updateSection, deleteSection};
