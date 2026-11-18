@@ -42,3 +42,40 @@ const updateProfile = async (req, res) => {
         })
     }
 }
+
+const deleteAccount = async (req, res) => {
+    try{
+        //fetch data
+        const id = req.user.id;
+        //validation
+        const userDetails = await findById({id});
+        if(!userDetails){
+            return res.status(500).json({
+                success : false,
+                message : "User not found"
+            })
+        }
+        //delete user profile first
+        await Profile.findByIdAndDelete({_id : userDetails.additionalDetails});
+        //Todo : Unenroll user from all enrolled courses
+
+        //delete user
+        await User.findByIdAndDelete({_id : id})
+        //return res
+        res.status(200).json({
+            success : true,
+            message : "Profile deleted successfully"
+        })
+    }catch(err){
+        console.log("Error while deleting account", err);
+        res.status(500).json({
+            success : false,
+            message : err.message
+        })
+    }
+}
+
+export {updateProfile, deleteAccount};
+
+//How to schedule a job to execute after particular amount of time
+//crone job
