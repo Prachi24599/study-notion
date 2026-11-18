@@ -15,7 +15,7 @@ const courseSchema = mongoose.Schema({
     whatYouWillLearn : {
         type : String
     },
-    courseContent : [{
+    courseContent : [{ //Section
         type : mongoose.Schema.Types.ObjectId,
         ref : "Section"
     }],

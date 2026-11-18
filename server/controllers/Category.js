@@ -36,7 +36,7 @@ const getAllCategory = async (req, res) => {
         const allCategory = await Category.find({}, {name : true, description : true});
         res.status(200).json({
             success : true,
-            message : "All tags are returned successfully!",
+            message : "All categories are returned successfully!",
             data : allCategory
         })
          
