@@ -52,7 +52,7 @@ StudyNotion follows a client-server monolithic architecture:
 ## 📊 Database Schema Summary
 
 - **Users (Student / Instructor):** Name, Email, Password, AccountType, Profile, Courses, CourseProgress
-- **Courses:** courseName, courseDescription, Instructor, WhatYouWillLearn, courseContent (Sections & Sub-Sections), RatingAndReviews, price, thumbnail, Tag, StudentsEnrolled
+- **Courses:** courseName, courseDescription, Instructor, WhatYouWillLearn, courseContent (Sections & Sub-Sections), RatingAndReviews, price, thumbnail, Category, StudentsEnrolled
 - **Section & Sub-Section:** Module structure with titles, duration, video URLs, and materials
 - **RatingAndReviews:** User, rating (out of 5), review text
 - **Invoices:** User, courseName, price, address, pincode, courseID

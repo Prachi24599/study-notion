@@ -216,12 +216,24 @@ const login = async (req, res) => {
 const changePassword = async (req, res) => {
     try{
         //fetch data from req body - oldPassword, newPassword, confirmNewPassword
+        const {newPassword, confirmNewPassword} = req.body;
         //validation
+        if(!newPassword || !confirmNewPassword){
+            return res.status(500).json({
+                success : "false",
+                message : "Password and confirmPassword is required!"
+            })
+        }
         //update password in DB
+
         //send mail for - Password Reset
         //Return Response
 
     }catch(err) {
-
+        console.err("Error while Login!", err);
+        res.status(500).json({
+            success : false,
+            message : err.message
+        })
     }
 }
