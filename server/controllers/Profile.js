@@ -74,8 +74,32 @@ const deleteAccount = async (req, res) => {
         })
     }
 }
-
-export {updateProfile, deleteAccount};
-
 //How to schedule a job to execute after particular amount of time
 //crone job
+
+const getAllUserDetails = async (req, res) => {
+    try{    
+        //fetch id
+        const id = req.user.id;
+
+        //validate and getUserDetails 
+        const userDetails = await User.findById(id).populate("additionalDetails").exec();
+
+        //return res
+        return res.status(200).json({
+            success : true,
+            data : userDetails,
+            message : "User data fetched successfully"
+        })
+
+    }catch(err){
+        console.log("Error while fetching user details", err);
+        res.status(500).json({
+            success : false,
+            message : err.message
+        })
+    }
+}   
+
+export {updateProfile, deleteAccount, getAllUserDetails};
+
