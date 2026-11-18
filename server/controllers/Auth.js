@@ -24,7 +24,7 @@ const sendOtp = async (req, res) => {
         }
 
         //generate otp
-        const otp = otpGenerator.generate(6, {
+        let otp = otpGenerator.generate(6, {
             upperCaseAlphabets : false,
             lowerCaseAlphabets : false,
             specialChars : false
@@ -174,7 +174,7 @@ const login = async (req, res) => {
             })
         }
         //match password
-        if(bcrypt.compare(password, user?.password)){
+        if(await bcrypt.compare(password, user?.password)){
             //generate jwt token
             const payload = {
                 email : user.email,
@@ -237,3 +237,5 @@ const changePassword = async (req, res) => {
         })
     }
 }
+
+export {sendOtp, signUp, login, changePassword}

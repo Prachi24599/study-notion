@@ -7,7 +7,7 @@ import User from "../models/User.js";
 const auth = async (req, res, next) => {
     try{
         //Extract Token
-        const token = req.cookies.token || req.body.token || req.header("Authorisation").replace("Bearer ", "");
+        const token = req.cookies.token || req.body.token || req.header("Authorization").replace("Bearer ", "");
         //If token missing
         if(!token){
             return res.status(401).json({

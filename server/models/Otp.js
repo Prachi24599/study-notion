@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
 import mailSender from "../utils/mailSender.js";
 
-const optSchema = new mongoose.Schema({
+const otpSchema = new mongoose.Schema({
     email : {
         type : String,
         required : true
@@ -28,9 +28,9 @@ async function sendVerificationEmail(email, otp) {
 }
 
 //pre middleware to send email
-optSchema.post("save", async function (next) {
+otpSchema.post("save", async function (next) {
     await sendVerificationEmail(this.email, this.otp);
     next(); //call next middleware
 })
 
-export default mongoose.model("Otp", optSchema)
+export default mongoose.model("Otp", otpSchema)
