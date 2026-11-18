@@ -69,9 +69,9 @@ const updateSubSection = async (req, res) => {
         
         //If subsection is not found
         if(!updatedSubSection){
-             return res.status(404).json({
-            success: false,
-            message: "Subsection not found."
+            return res.status(404).json({
+                success: false,
+                message: "Subsection not found."
             });
         }
 
@@ -90,3 +90,53 @@ const updateSubSection = async (req, res) => {
     }
 }
 
+const deleteSubSection = async (req, res) => {
+    try{
+        //get subsectionId and sectionId
+        //If we are deleting the subsection, then we should also remove it's reference from the section array
+        const {sectionId, subSectionId} = req.body;
+        //validate
+        if(!sectionId || !subSectionId) {
+            return res.status(404).json({
+                success : false,
+                message : "subsectionid  and sectionId are required"
+            })
+        }
+
+        //first delete the reference from section
+        const sectionData = await Section.findOneAndUpdate(
+            {_id : sectionId, subSection : subSectionId},
+            {$pull : {subSection : subSectionId}},
+            {new : true}
+        )
+
+        if(!sectionData){
+            return res.status(404).json({
+                success: false,
+                message: "Section or subsection reference not found."
+            });
+        }
+        //check if subsection present
+        const deletedSubSection = await SubSection.findByIdAndDelete(subSectionId);
+        if(!deletedSubSection){
+            return res.status(404).json({
+                success: false,
+                message: "Subsection not found."
+            });
+        }
+        //Todo : Need to delete the video stored in cloudinary
+        //return res
+         res.status(200).json({
+            success : true,
+            message : "SubSection Deleted successfully"
+        })
+    }catch(err) {
+        console.log("Error while deleting SubSection", err);
+        res.status(500).json({
+            success : false,
+            message : err.message
+        })
+    }
+}
+
+export {createSubSection, updateSubSection, deleteSubSection}
