@@ -267,11 +267,11 @@ const changePassword = async (req, res) => {
             console.log("Email sent successfully", emailResponse);
         }catch(err){
            // If there's an error sending the email, log the error and return a 500 (Internal Server Error) error
-			console.error("Error occurred while sending email:", error);
+			console.error("Error occurred while sending email:", err);
 			return res.status(500).json({
 				success: false,
 				message: "Error occurred while sending email",
-				error: error.message,
+				error: err.message,
 			});
         }
 
