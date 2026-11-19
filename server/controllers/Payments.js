@@ -94,3 +94,83 @@ const capturePayment = async (req, res) => {
             })
     }
 }
+
+//Verify signature of Razorpay and Server
+const verifySignature = async (req, res) => {
+    try{
+        const webHookSecret = "12345678";
+        const signature = req.headers("x-razorpay-signature");
+        //Razorpay sents a secret key using hashing, We cant hashback it to its original form
+        //So, The key we have here on server, we'll hash it and compare it with razorpay key
+        //HMAC - It needs Hashing Algo and Secret Key [Here we specify which hashing algorithm we use and using which secret key]
+        const shasum = crypto.createHmac("sha256", webHookSecret);
+        shasum.update(json.stringify(req.body));
+        const digest = shasum.digest("hex");
+
+        if(signature === digest){
+            console.log("Payment is Authorized!");
+
+            //This request is coming from razorpay, so we dont have courseId and userId from req.body
+            //So, We had added that in capturePayment -> options -> notes
+
+            const {courseId, userId} = req.body.payload.payment.entity.notes;
+            try{
+                //fulfill the action
+
+                //Find the course and enroll the student in it
+                const enrolledCourse = await Course.findOneAndUpdate(
+                    {_id : courseId},
+                    {$push : {studentsEnrolled : userId}},
+                    {new : true}
+                )
+                if(!enrolledCourse){
+                    return res.status(500).json({
+                        success : false,
+                        message : "Course not found!"
+                    })
+                }
+                console.log("EnrolledCourse", enrolledCourse);
+
+                //Find the student and add course to their courses
+                const enrolledStudent = await User.findOneAndUpdate(
+                    userId,
+                    {$push : {courses :courseId}},
+                    {new : true}
+                )
+                console.log("enrolledStudent", enrolledStudent);
+
+                //Send Confirmation Email to Student
+                const emailResponse = await mailSender(
+                    enrolledStudent.email,
+                    "Congradulation from StudyNotion",
+                    courseEnrollmentEmail(enrolledCourse.courseName, enrolledStudent.firstName)
+                )
+                console.log("emailResponse", emailResponse);
+
+                return res.status(200).json({
+                    success : true,
+                    message : "Signature Verified and Course Added"
+                })
+            }catch(err){    
+                console.error(err);
+                return res.status(500).json({
+                    success : false,
+                    message : err.message
+                })
+            }
+        }else{
+            return res.status(400).json({
+                success : false,
+                message : "Invalid Request"
+            })
+        }
+    }catch(err){
+        console.log("Error occoured while verifying signature", err);
+            res.status(500).json({
+                success : false,
+                message : err.message
+            })
+    }
+}
+
+export {capturePayment, verifySignature};
