@@ -4,6 +4,8 @@ import otpGenerator from "otp-generator";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
+import mailSender from "../utils/mailSender.js";
+import { passwordUpdated } from "../mail/templates/passwordUpdate.js";
 dotenv.config();
 
 //sendOtp
@@ -216,19 +218,67 @@ const login = async (req, res) => {
 const changePassword = async (req, res) => {
     try{
         //fetch data from req body - oldPassword, newPassword, confirmNewPassword
-        const {newPassword, confirmNewPassword} = req.body;
-        //validation
-        if(!newPassword || !confirmNewPassword){
+        const {oldPassword, newPassword, confirmNewPassword} = req.body;
+        const id = req.user.id;
+         //validation
+        if(!oldPassword || !newPassword || !confirmNewPassword){
             return res.status(500).json({
                 success : "false",
-                message : "Password and confirmPassword is required!"
+                message : "All the fields are required."
             })
         }
-        //update password in DB
+        //fetch user details
+        const userDetails = await User.findById(id);
+        //validate old password
+        const isPasswordMatch = await bcrypt.compare(oldPassword, userDetails.password)
+        //If old password does not match, return a 401 (Unauthorized) error
+        if(!isPasswordMatch){
+            return res.status(401).json({
+                success : false,
+                message : "The old password is incorrect!"
+            })
+        }
+        //Match the newPassword and confirmNewPassword
+        if(newPassword !== confirmNewPassword){
+            // If new password and confirm new password do not match, return a 400 (Bad Request) error
+            return res.status(400).json({
+                success : false,
+                message : "The password and confirm password does not match"
+            })
+        }
+        //Encrypt new password
+        const encryptedPassword = await bcrypt.hash(newPassword, 10);
+        //update new password in db
+        const updatedUserDetails = await User.findByIdAndUpdate(
+            id,
+            {password : encryptedPassword},
+            {new : true}
+        )
+        //send notification mail for - Password Reset
+        try{
+            const emailResponse = await mailSender(
+                                        updatedUserDetails.email,
+                                        "Password Update Confirmation",
+                                        passwordUpdated(
+                                            updatedUserDetails.email,
+                                            `${updatedUserDetails.firstName} ${updatedUserDetails.lastName}`
+                                        )
+                                 )
+            console.log("Email sent successfully", emailResponse);
+        }catch(err){
+           // If there's an error sending the email, log the error and return a 500 (Internal Server Error) error
+			console.error("Error occurred while sending email:", error);
+			return res.status(500).json({
+				success: false,
+				message: "Error occurred while sending email",
+				error: error.message,
+			});
+        }
 
-        //send mail for - Password Reset
-        //Return Response
-
+       	// Return success response
+		return res
+			.status(200)
+			.json({ success: true, message: "Password updated successfully" });
     }catch(err) {
         console.err("Error while Login!", err);
         res.status(500).json({
