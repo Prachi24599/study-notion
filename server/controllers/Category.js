@@ -49,4 +49,44 @@ const getAllCategory = async (req, res) => {
     }
 }
 
-export {getAllCategory, createCategory};
+const categoryPageDetails = async (req, res) => {
+    try{
+        //get data
+        const {categoryId} = req.body;
+        //get coursed for specified categoryId
+        const selectedCategoryCourses = await Category.findById(categoryId)
+                                                    .populate("courses")
+                                                    .exec();
+        //validation
+        if(!selectedCategoryCourses){
+            return res.status(404).json({
+                success : false,
+                message : "Data not found!"
+            })
+        }
+
+        //get courses for different categories
+        const differentCategories = await Category.find({
+                                        _id : {$ne : categoryId}, //ne = not equal to given category id
+                                    }).populate("courses").exec();
+        
+        //TODO - Which course has selling faster
+        //Find top 10 seliing courses
+        return res.status(200).json({
+            success : true,
+            data : {
+                selectedCategoryCourses,
+                differentCategories
+            }
+        })
+        
+    }catch(err){ 
+        console.log("Error while fetching category page details", err);
+        res.status(500).json({
+            success : false,
+            message : err.message
+        })
+    }
+}
+
+export {getAllCategory, createCategory, categoryPageDetails} ;
