@@ -135,4 +135,32 @@ const getAllRatingAndReviews = async (req, res) => {
     }
 }
 
-export {createRatingandReview, getAverageRating, getAllRatingAndReviews}
+//fetch rating and review for particular course
+const getCourseRatingReview = async (req, res) => {
+     try{
+        const {courseId} = req.body;
+
+        const courseRatingAndReview = await RatingsAndReview.find({course : courseId})
+
+        if(!courseRatingAndReview){
+            return res.status(200).json({
+                success : true,
+                message : `No rating and reviews added for this ${courseId}`
+            })
+        }
+
+        return res.status(200).json({
+            success : true,
+            message : "Rating and Reviews fetched successfully!",
+            data : courseRatingAndReview
+        })
+    }catch(err) {
+        console.log("Error while fetching all rating and reviews", err);
+        return res.status(500).json({
+            success : false,
+            message : err.message
+        })
+    }
+}
+
+export {createRatingandReview, getAverageRating, getAllRatingAndReviews, getCourseRatingReview}
