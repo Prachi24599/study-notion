@@ -119,4 +119,47 @@ const showAllCourses = async (req, res) => {
     }
 }
 
-export {createCourse, showAllCourses};
+const getCourseDetails = async (req, res) => {
+    try{
+        //get data
+        const {courseId} = req.body;
+        //validate
+        if(!courseId){
+            return res.status(400).json({
+                success : false,
+                message : "courseId is required"
+            })
+        }
+        //fetch course details
+        //Course.findById(courseId) is a shorthand for Course.findOne({ _id: courseId }) 
+        const courseDetail = await Course.findById(courseId)
+                                                    .populate("instructor")
+                                                    .populate(
+                                                        {
+                                                            path : "courseContent", 
+                                                            populate : {path : "subSection"}
+                                                        })
+                                                    .populate("ratingAndReviews")
+                                                    .populate("category")
+                                                    .populate("studentsEnrolled")
+        if(!courseDetail){
+            return res.status(404).json({
+                success : false,
+                message : "Error while fetching course details from DB"
+            })
+        }
+        //return response
+        return res.status(200).json({
+            success : true,
+            data : courseDetail,
+            message : "course details fetched successfully!"
+        })
+    }catch(err){
+        console.log("Error while fetching course details", err);
+        res.status(500).json({
+            success : false,
+            message : err.message
+        })
+    }
+}
+export {createCourse, showAllCourses, getCourseDetails};
