@@ -15,6 +15,10 @@ const courseSchema = mongoose.Schema({
     whatYouWillLearn : {
         type : String
     },
+    tag: {
+		type: [String],
+		required: true,
+	},
     courseContent : [{ //Section
         type : mongoose.Schema.Types.ObjectId,
         ref : "Section"

@@ -16,7 +16,7 @@ const mailSender = async (email, title, body) => {
             from : "StudyNotion - Prachi",
             to : `${email}`,
             subject : `${title}`,
-            body : `${body}`
+            html : `${body}`
         })
 
         console.log("SendMail", sendMail);
