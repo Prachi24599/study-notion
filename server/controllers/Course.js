@@ -2,7 +2,7 @@ import Course from "../models/Course.js";
 import Category from "../models/Category.js";
 import User from "../models/User.js";
 import uploadFileToCloudinary from "../utils/fileUploader.js";
-import dotenv from "dotenv";
+import dotenv, { populate } from "dotenv";
 dotenv.config();
 
 const createCourse = async (req, res) => {
@@ -103,7 +103,8 @@ const showAllCourses = async (req, res) => {
             instructor : true,
             ratingAndReviews : true,
             studentsEnrolled : true,
-        }).populate("instrctor").exec();
+        }).populate("instructor", "firstName lastName image")
+          .exec();
 
         res.status(200).json({
             success : true,
@@ -133,7 +134,12 @@ const getCourseDetails = async (req, res) => {
         //fetch course details
         //Course.findById(courseId) is a shorthand for Course.findOne({ _id: courseId }) 
         const courseDetail = await Course.findById(courseId)
-                                                    .populate("instructor")
+                                                    .populate(
+                                                        {
+                                                            path : "instructor",
+                                                            populate : {path : "additionalDetails"}
+                                                        }
+                                                    )
                                                     .populate(
                                                         {
                                                             path : "courseContent", 
@@ -142,6 +148,7 @@ const getCourseDetails = async (req, res) => {
                                                     .populate("ratingAndReviews")
                                                     .populate("category")
                                                     .populate("studentsEnrolled")
+                                                    .exec();
         if(!courseDetail){
             return res.status(404).json({
                 success : false,
