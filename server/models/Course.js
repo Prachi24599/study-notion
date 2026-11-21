@@ -41,6 +41,9 @@ const courseSchema = mongoose.Schema({
         type : mongoose.Schema.Types.ObjectId,
         ref : "User"
     }],
+    instructions: {
+		type: [String],
+	},
     status : {
         type : "String",
         enum : ["Draft", "Published"]
