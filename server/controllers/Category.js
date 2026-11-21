@@ -1,4 +1,5 @@
 import Category from "../models/Category.js";
+import Course from "../models/Course.js";
 
 const createCategory = async (req, res) => {
     try{
@@ -72,11 +73,32 @@ const categoryPageDetails = async (req, res) => {
         
         //TODO - Which course has selling faster
         //Find top 10 seliing courses
+        //We need to fetch all the courses it's sstudentsEnrolled count with descending order 
+        const topSellingCourses = await Course.aggregate([
+            {
+                $addFields : {
+                    enrollmentCount : {
+                        $size : {ifNull : ["$studentsEnrolled", []]}
+                    }
+                }
+            },
+            {$sort : {enrollmentCount : -1}},
+            {$limit : 10},
+            {
+                $project : {
+                    courseName : 1,
+                    price : 1,
+                    thumbNail : 1,
+                    enrollmentCount : 1
+                }
+            }
+        ])
         return res.status(200).json({
             success : true,
             data : {
                 selectedCategoryCourses,
-                differentCategories
+                differentCategories,
+                topSellingCourses
             }
         })
         
