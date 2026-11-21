@@ -3,18 +3,10 @@ import express from "express";
 const router = express.Router()
 
 // Import the required controllers and middleware functions
-const {
-  login,
-  signUp,
-  sendOtp,
-  changePassword,
-} = require("../controllers/Auth")
-const {
-  resetPasswordToken,
-  resetPassword,
-} = require("../controllers/ResetPassword")
 
-const { auth } = require("../middleware/auth")
+import {login, signUp, sendOtp, changePassword} from "../controllers/Auth.js";
+import { resetPasswordToken, resetPassword } from "../controllers/ResetPassword.js";
+import { auth } from "../middleware/auth.js";
 
 // Routes for Login, Signup, and Authentication
 
