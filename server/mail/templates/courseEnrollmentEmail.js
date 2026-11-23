@@ -1,4 +1,4 @@
-export function courseEnrollmentEmail(courseName, name) {
+export default function courseEnrollmentEmail(courseName, name) {
     return `<!DOCTYPE html>
     <html>
     

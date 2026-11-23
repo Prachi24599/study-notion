@@ -15,7 +15,7 @@ router.delete("/deleteProfile", deleteAccount)
 router.put("/updateProfile", auth, updateProfile)
 router.get("/getUserDetails", auth, getAllUserDetails)
 // Get Enrolled Courses
-router.get("/getEnrolledCourses", auth, getEnrolledCourses)
-router.put("/updateDisplayPicture", auth, updateDisplayPicture)
+// router.get("/getEnrolledCourses", auth, getEnrolledCourses)
+// router.put("/updateDisplayPicture", auth, updateDisplayPicture)
 
 export default router;
