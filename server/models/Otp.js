@@ -23,7 +23,7 @@ async function sendVerificationEmail(email, otp) {
         const mailResponse = await mailSender(email, "Verification email from StudyNotion", otp);
         console.log("Email Send Successfully!", mailResponse);
     }catch(error){
-        console.error("Error occoured while sending email", error);
+        console.log("Error occoured while sending email", error);
     }
 }
 

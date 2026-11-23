@@ -51,7 +51,7 @@ const sendOtp = async (req, res) => {
 
         //ones we found a unique otp, add that entry in the db
         const otpPayload = {email, otp};
-        const otpBody = await Otp.create({otpPayload});
+        const otpBody = await Otp.create(otpPayload);
         console.log("Otp added to db", otpBody);
 
         //return successful response
@@ -61,7 +61,7 @@ const sendOtp = async (req, res) => {
             message : "Otp sent successfully!"
         })
     }catch(err){
-        console.err("Error while generating otp", err);
+        console.log("Error while generating otp", err);
         res.status(500).json({
             success : false,
             message : err.message
@@ -147,7 +147,7 @@ const signUp = async (req, res) => {
             message : "User created Successfully!!"
         })
     }catch(err) {
-        console.err("Error while Signup!", err);
+        console.log("Error while Signup!", err);
         res.status(500).json({
             success : false,
             message : err.message
@@ -206,7 +206,7 @@ const login = async (req, res) => {
             })
         } 
     }catch(err){
-        console.err("Error while Login!", err);
+        console.log("Error while Login!", err);
         res.status(500).json({
             success : false,
             message : err.message
@@ -267,7 +267,7 @@ const changePassword = async (req, res) => {
             console.log("Email sent successfully", emailResponse);
         }catch(err){
            // If there's an error sending the email, log the error and return a 500 (Internal Server Error) error
-			console.error("Error occurred while sending email:", err);
+			console.log("Error occurred while sending email:", err);
 			return res.status(500).json({
 				success: false,
 				message: "Error occurred while sending email",
@@ -280,7 +280,7 @@ const changePassword = async (req, res) => {
 			.status(200)
 			.json({ success: true, message: "Password updated successfully" });
     }catch(err) {
-        console.err("Error while Login!", err);
+        console.log("Error while Login!", err);
         res.status(500).json({
             success : false,
             message : err.message

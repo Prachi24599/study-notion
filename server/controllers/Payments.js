@@ -46,7 +46,7 @@ const capturePayment = async (req, res) => {
             }
 
         }catch(error){
-            console.error(error);
+            console.log(error);
             res.status(500).json({
                 success : false,
                 message : error.message
@@ -155,7 +155,7 @@ const verifySignature = async (req, res) => {
                     message : "Signature Verified and Course Added"
                 })
             }catch(err){    
-                console.error(err);
+                console.log(err);
                 return res.status(500).json({
                     success : false,
                     message : err.message
