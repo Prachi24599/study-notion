@@ -3,6 +3,7 @@ import Course from "../models/Course.js";
 import User from "../models/User.js";
 import mailSender from "../utils/mailSender.js";
 import courseEnrollmentEmail from "../mail/templates/courseEnrollmentEmail.js";
+import mongoose from "mongoose";
 import crypto from "node:crypto";
 
 

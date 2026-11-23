@@ -3,11 +3,11 @@ const app = express();
 //Import Routes
 import userRoutes from "./routes/User.js";
 import profileRoutes from "./routes/Profile.js";
-import courseRoutes from "../routes/Course.js";
-import paymentRoutes from "../routes/Payments.js";
+import courseRoutes from "./routes/Course.js";
+import paymentRoutes from "./routes/Payments.js";
 
 import dbConnect from "./config/database.js";
-import cloudinaryConnect from "cloudinary.js";
+import cloudinaryConnect from "./config/cloudinary.js";
 import cookieParser from "cookie-parser";
 import cors from "cors";
 import fileUpload from "express-fileupload";
