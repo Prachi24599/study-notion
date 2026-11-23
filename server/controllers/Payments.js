@@ -3,6 +3,8 @@ import Course from "../models/Course.js";
 import User from "../models/User.js";
 import mailSender from "../utils/mailSender.js";
 import courseEnrollmentEmail from "../mail/templates/courseEnrollmentEmail.js";
+import crypto from "node:crypto";
+
 
 //Capture a Payment and Initiate the Razorpay order
 const capturePayment = async (req, res) => {
