@@ -19,18 +19,13 @@ const otpSchema = new mongoose.Schema({
 
 //function to send email
 async function sendVerificationEmail(email, otp) {
-    try{
-        const mailResponse = await mailSender(email, "Verification email from StudyNotion", otp);
-        console.log("Email Send Successfully!", mailResponse);
-    }catch(error){
-        console.log("Error occoured while sending email", error);
-    }
+    const mailResponse = await mailSender(email, "Verification email from StudyNotion", otp);
+    console.log("Email Send Successfully!", mailResponse);
 }
 
 //pre middleware to send email
-otpSchema.post("save", async function (next) {
+otpSchema.post("save", async function () {
     await sendVerificationEmail(this.email, this.otp);
-    next(); //call next middleware
 })
 
 export default mongoose.model("Otp", otpSchema)
