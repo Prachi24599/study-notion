@@ -12,6 +12,8 @@ import cookieParser from "cookie-parser";
 import cors from "cors";
 import fileUpload from "express-fileupload";
 import dotenv from "dotenv";
+import os from "node:os";
+import path from "node:path";
 dotenv.config();
 
 const PORT = process.env.PORT || 4000;
@@ -31,7 +33,7 @@ app.use(
 app.use(
     fileUpload({
         useTempFiles : true,
-        tempFileDir : "/temp"
+        tempFileDir : path.join(os.tmpdir(), "study-notion-uploads")
     })
 )
 
