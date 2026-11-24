@@ -18,9 +18,20 @@ const updateProfile = async (req, res) => {
         //Find Profile
         //We need to find Profile Details but as we dont have profile id yet we will first find the userdetails
         //And from userDetails, We can find profileId
-        const userDetails = await User.find({id});
-        const profileId = await userDetails.additionalDetails;
-        const profileDetails = await Profile.findById({profileId});
+        const userDetails = await User.findById(id);
+        if(!userDetails){
+            return res.status(404).json({
+                success : false,
+                message : "User not found"
+            })
+        }
+        const profileDetails = await Profile.findById(userDetails.additionalDetails);
+        if(!profileDetails){
+            return res.status(404).json({
+                success : false,
+                message : "Profile not found"
+            })
+        }
         //Update Profile
         profileDetails.dateOfBirth = dateOfBirth;
         profileDetails.about = about;
