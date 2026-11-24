@@ -1,4 +1,5 @@
 import User from "../models/User.js";
+import Profile from "../models/Profile.js";
 import Otp from "../models/Otp.js";
 import otpGenerator from "otp-generator";
 import bcrypt from "bcrypt";
@@ -99,17 +100,17 @@ const signUp = async (req, res) => {
         }
          
         //Find the most recent otp stored for the user
-        const recentOtp = await Otp.find({email}).sort({createdAt : -1}).limit(1);
+        const recentOtp = await Otp.findOne({email}).sort({createdAt : -1});
         console.log("recentOtp", recentOtp);
 
         //Validate otp
-        if(recentOtp === 0) {
+        if(!recentOtp) {
             //otp not found
              return res.status(400).json({
                 success : false,
                 message : "Otp not found!"
             })
-        } else if(otp !== recentOtp.otp){
+        } else if(Number(otp) !== recentOtp.otp){
             //Invalid otp - otp does not match
              return res.status(400).json({
                 success : false,
