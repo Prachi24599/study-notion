@@ -37,7 +37,7 @@ const auth = async (req, res, next) => {
 }
 
 //isStudent
-const isStudent = async () => {
+const isStudent = async (req, res, next) => {
     try{
         if(req.user.accountType !== "Student"){
             return res.status(401).json({
@@ -55,7 +55,7 @@ const isStudent = async () => {
 }
 
 //isInstructor
-const isInstructor = async () => {
+const isInstructor = async (req, res, next) => {
     try{
         if(req.user.accountType !== "Instructor"){
             return res.status(401).json({
@@ -73,7 +73,7 @@ const isInstructor = async () => {
 }
 
 //isAdmin
-const isAdmin = async () => {
+const isAdmin = async (req, res, next) => {
     try{
         if(req.user.accountType !== "Admin"){
             return res.status(401).json({
