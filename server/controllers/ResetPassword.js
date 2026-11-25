@@ -27,7 +27,7 @@ const resetPasswordToken = async (req, res) => {
             })
         }
         //Generate Token
-        const token = crypto.randomUUID();
+        const token = crypto.randomBytes(20).toString("hex");
         //Update user by adding token and expiration date
         const updatedDetails = await User.findOneAndUpdate(
             {email : email},
@@ -37,12 +37,14 @@ const resetPasswordToken = async (req, res) => {
             },
             {new : true} //Fetch the updated document
         )
+        console.log("updatedDetails", updatedDetails);
         //create url
         const url = `http://localhost:3000/update-password/${token}`
         //Send mail containing the url
         await mailSender(email, 
                         "Password Reset Link - Study Notion",
-                        `Password Reset Link : ${url}`);
+			            `Your Link for email verification is ${url}. Please click this url to reset your password.`
+        );
         //return response
         res.status(200).json({
             success : true,
