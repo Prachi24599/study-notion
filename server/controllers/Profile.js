@@ -60,19 +60,19 @@ const deleteAccount = async (req, res) => {
         //fetch data
         const id = req.user.id;
         //validation
-        const userDetails = await findById({id});
+        const userDetails = await User.findById(id);
         if(!userDetails){
-            return res.status(500).json({
+            return res.status(404).json({
                 success : false,
                 message : "User not found"
             })
         }
         //delete user profile first
-        await Profile.findByIdAndDelete({_id : userDetails.additionalDetails});
+        await Profile.findByIdAndDelete(userDetails.additionalDetails);
         //Todo : Unenroll user from all enrolled courses
 
         //delete user
-        await User.findByIdAndDelete({_id : id})
+        await User.findByIdAndDelete(id)
         //return res
         res.status(200).json({
             success : true,
