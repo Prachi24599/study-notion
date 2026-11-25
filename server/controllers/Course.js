@@ -8,7 +8,7 @@ dotenv.config();
 const createCourse = async (req, res) => {
     try{  
         //fetch Data  
-        const {courseName, courseDescription, whatYouWillLearn, price, tag, category, status, instructions} = req.body;
+        let {courseName, courseDescription, whatYouWillLearn, price, tag, category, status, instructions} = req.body;
 
         //get thumbnail
         const thumbnail = req.files.thumbnailImage;
@@ -38,7 +38,7 @@ const createCourse = async (req, res) => {
         }
 
         //check given category valid or not
-        const categoryDetails = await Category.findById({category});
+        const categoryDetails = await Category.findById(category);
         if(!categoryDetails){
             return res.status(404).json({
                 success : false,

@@ -9,12 +9,12 @@ const createSubSection = async (req, res) => {
         //fetch data from req.body
         const {sectionId, title, timeDuration, description} = req.body;
         //extract video/file
-        const video = req.files.videoFile;
+        const video = req.files?.videoFile;
         //validation
-        if(!sectionId || !title || !timeDuration || !description){
+        if(!sectionId || !title || !timeDuration || !description || !video){
             return res.status(400).json({
                 success : false,
-                message : "All fields are required!"
+                message : "Section details and a videoFile upload are required!"
             })
         }
         //upload video to cloudinary
