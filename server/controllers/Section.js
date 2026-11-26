@@ -73,17 +73,33 @@ const updateSection = async (req, res) => {
 const deleteSection = async (req, res) => {
     try{
         //fetch data - assuming that we are sending id in params
-        const {sectionId} = req.params;
+        const {sectionId, courseId} = req.body;
         //validate data
-        if(!sectionId){
+        if(!sectionId || !courseId){
             return res.status(500).json({
                 success : false,
-                message : "sectionId required!"
+                message : "sectionId and courseId are required!"
             })
         }
         //delete 
-        await Section.findByIdAndDelete(sectionId);
+        const deleteSectionRes = await Section.findByIdAndDelete(sectionId);
+        if(!deleteSectionRes){
+            res.status(500).json({
+                success : false,
+                message : " Failed to delete Section!"
+            })
+        }
         //Todo : Do we need to delete the entry from course schema?
+        //Delete the section entry from course as well
+        const deleteSectionFromCourse = await Course.findByIdAndDelete(courseId,
+            {$pull : {courseContent : sectionId}}
+        )
+         if(!deleteSectionFromCourse){
+            res.status(500).json({
+                success : false,
+                message : " Failed to delete Section from Course!"
+            })
+        }
         res.status(200).json({
             success : true,
             message : "Section deleted successfully"
