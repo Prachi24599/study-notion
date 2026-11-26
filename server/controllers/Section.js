@@ -6,25 +6,42 @@ const createSection = async (req, res) => {
         //fetch data
         const {sectionName, courseId} = req.body;
         //validate data
-        if(!courseId || !sectionName){
-            return res.status(500).json({
+        if(!courseId || typeof sectionName !== "string" || !sectionName.trim()){
+            return res.status(400).json({
                 success : false,
-                message : "All fields are required!"
+                message : "A valid courseId and sectionName are required!"
             })
         }
+
+        const course = await Course.findById(courseId);
+        if(!course){
+            return res.status(404).json({
+                success : false,
+                message : "Course not found!"
+            })
+        }
+
         //create section
-        const newSection = await Section.create({sectionName});
+        const newSection = await Section.create({sectionName : sectionName.trim()});
         //update course with section objectId
         const updatedCourseDetails = await Course.findByIdAndUpdate(
-                                                courseId,
-                                                { $push : {courseContent : newSection._id}},
-                                                {new : true}
-                                            ).populate({
-                                                path : "courseContent",
-                                                populate : {path : "subSection"}
-                                            })
+            courseId,
+            { $push : {courseContent : newSection._id}},
+            { returnDocument : "after" }
+        ).populate({
+            path : "courseContent",
+            populate : {path : "subSection"}
+        })
+        if(!updatedCourseDetails){
+            await Section.findByIdAndDelete(newSection._id);
+            return res.status(404).json({
+                success : false,
+                message : "Course not found!"
+            })
+        }
+
         //return res
-        res.status(200).json({
+        return res.status(200).json({
             success : true,
             data : updatedCourseDetails,
             message : "Section Created successfully"
@@ -72,35 +89,37 @@ const updateSection = async (req, res) => {
 
 const deleteSection = async (req, res) => {
     try{
-        //fetch data - assuming that we are sending id in params
+        //fetch data
         const {sectionId, courseId} = req.body;
         //validate data
         if(!sectionId || !courseId){
-            return res.status(500).json({
+            return res.status(400).json({
                 success : false,
                 message : "sectionId and courseId are required!"
             })
         }
-        //delete 
-        const deleteSectionRes = await Section.findByIdAndDelete(sectionId);
-        if(!deleteSectionRes){
-            res.status(500).json({
+        const section = await Section.findById(sectionId);
+        if(!section){
+            return res.status(404).json({
                 success : false,
-                message : " Failed to delete Section!"
+                message : "Section not found!"
             })
         }
-        //Todo : Do we need to delete the entry from course schema?
-        //Delete the section entry from course as well
-        const deleteSectionFromCourse = await Course.findByIdAndDelete(courseId,
+
+        const course = await Course.findOneAndUpdate(
+            {_id : courseId, courseContent : sectionId},
             {$pull : {courseContent : sectionId}}
         )
-         if(!deleteSectionFromCourse){
-            res.status(500).json({
+        if(!course){
+            return res.status(404).json({
                 success : false,
-                message : " Failed to delete Section from Course!"
+                message : "Course or section reference not found!"
             })
         }
-        res.status(200).json({
+
+        await Section.findByIdAndDelete(sectionId);
+
+        return res.status(200).json({
             success : true,
             message : "Section deleted successfully"
         })
