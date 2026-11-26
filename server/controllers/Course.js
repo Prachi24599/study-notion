@@ -143,7 +143,11 @@ const getCourseDetails = async (req, res) => {
                                                     .populate(
                                                         {
                                                             path : "instructor",
-                                                            populate : {path : "additionalDetails"}
+                                                            select : "firstName lastName email accountType additionalDetails courses image",
+                                                            populate : [
+                                                                {path : "additionalDetails"},
+                                                                {path : "courses"}
+                                                            ]
                                                         }
                                                     )
                                                     .populate(
